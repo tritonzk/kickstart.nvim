@@ -1,6 +1,6 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-vim.g.have_nerd_font = false -- Set to true if you have a Nerd Font installed and selected in the terminal
+vim.g.have_nerd_font = true -- Set to true if you have a Nerd Font installed and selected in the terminal
 
 --  NOTE: See `:help vim.opt` and ':help option-list'
 vim.opt.number = true -- Make line numbers default
@@ -75,7 +75,7 @@ require('lazy').setup({
   { 'numToStr/Comment.nvim', opts = {} }, -- "gc" to comment visual regions/lines
 
   -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
+  { --  NOTE: Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
       signs = {
@@ -88,7 +88,7 @@ require('lazy').setup({
     },
   },
 
-  { -- Useful plugin to show you pending keybinds.
+  { --  NOTE: Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
@@ -111,8 +111,6 @@ require('lazy').setup({
     end,
   },
 
-  -- NOTE: Plugins can specify dependencies.
-
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
@@ -134,12 +132,6 @@ require('lazy').setup({
     config = function()
       --  :Telescope help_tags. Insert mode: <c-/> Normal mode: ?
       require('telescope').setup { --  NOTE: see :help telescope OR :help telescope.setup()
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
-        -- pickers = {}
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -447,18 +439,14 @@ require('lazy').setup({
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
           -- Accept ([y]es) the completion.
           ['<C-y>'] = cmp.mapping.confirm { select = true },
-
-          -- If you prefer more traditional completion keymaps,
-          -- you can uncomment the following lines
+          -- If you prefer more traditional completion keymaps, you can uncomment the following lines
           --['<CR>'] = cmp.mapping.confirm { select = true },
           --['<Tab>'] = cmp.mapping.select_next_item(),
           --['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
           -- Manually trigger a completion from nvim-cmp.
           ['<C-Space>'] = cmp.mapping.complete {},
-
-          -- <c-l> will move you to the right of each of the expansion locations.
-          -- <c-h> is similar, except moving you backwards.
+          -- <c-l> expand right, <c-h> move back
           ['<C-l>'] = cmp.mapping(function()
             if luasnip.expand_or_locally_jumpable() then
               luasnip.expand_or_jump()
@@ -469,7 +457,6 @@ require('lazy').setup({
               luasnip.jump(-1)
             end
           end, { 'i', 's' }),
-
           -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
         },
@@ -499,28 +486,20 @@ require('lazy').setup({
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
-      -- Better Around/Inside textobjects
-      --
-      -- Examples:
+      -- Better Around/Inside textobjects. Examples:
       --  - va)  - [V]isually select [A]round [)]paren
       --  - yinq - [Y]ank [I]nside [N]ext [']quote
       --  - ci'  - [C]hange [I]nside [']quote
       require('mini.ai').setup { n_lines = 500 }
-
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
-      --
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
-
       -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
       local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
       statusline.setup { use_icons = vim.g.have_nerd_font }
-
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
       -- cursor location to LINE:COLUMN
@@ -528,8 +507,6 @@ require('lazy').setup({
       statusline.section_location = function()
         return '%2l:%-2v'
       end
-
-      -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
@@ -543,38 +520,23 @@ require('lazy').setup({
       highlight = {
         enable = true,
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
     },
     config = function(_, opts)
-      -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-
-      -- Prefer git instead of curl in order to improve connectivity in some environments
+      --  NOTE: See `:help nvim-treesitter`
       require('nvim-treesitter.install').prefer_git = true
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup(opts)
-
       -- There are additional nvim-treesitter modules that you can use to interact
       -- with nvim-treesitter. You should go explore a few and see what interests you:
-      --
       --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
       --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
-
-  -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
-  -- init.lua. If you want these files, they are in the repository, so you can just download them and
-  -- place them in the correct locations.
-
-  -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-  --
-  --  Here are some example plugins that I've included in the Kickstart repository.
-  --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  --
+  --  NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
   require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
@@ -586,8 +548,6 @@ require('lazy').setup({
   { import = 'custom.plugins' },
 }, {
   ui = {
-    -- If you are using a Nerd Font: set icons to an empty table which will use the
-    -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
     icons = vim.g.have_nerd_font and {} or {
       cmd = '⌘',
       config = '🛠',
