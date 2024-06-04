@@ -2,6 +2,8 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true -- Set to true if you have a Nerd Font installed and selected in the terminal
 
+-- set default shell
+
 --  NOTE: See `:help vim.opt` and ':help option-list'
 vim.opt.number = true -- Make line numbers default
 vim.opt.relativenumber = false -- relative line numbers
@@ -45,6 +47,8 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+vim.keymap.set('i', 'jj', '<Esc>', { desc = 'exit insert mode' })
 
 --  NOTE: [[ Basic Autocommands ]] See `:help lua-guide-autocommands`
 
@@ -143,6 +147,7 @@ require('lazy').setup({
     config = function()
       --  :Telescope help_tags. Insert mode: <c-/> Normal mode: ?
       require('telescope').setup { --  NOTE: see :help telescope OR :help telescope.setup()
+        pickers = { colorscheme = { enable_preview = true } },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -183,6 +188,10 @@ require('lazy').setup({
           prompt_title = 'Live Grep in Open Files',
         }
       end, { desc = '[S]earch [/] in Open Files' })
+
+      vim.keymap.set('n', '<leader>sc', function()
+        builtin.colorscheme {}
+      end, { desc = 'browse through colorschemes' })
 
       -- Shortcut for searching your Neovim configuration files
       vim.keymap.set('n', '<leader>sn', function()
@@ -313,7 +322,7 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = { -- see :help lspconfig-all for a list of all preconfig lsp's
-        -- clangd = {},
+        clangd = {},
         -- gopls = {},
         pyright = {},
         -- eslint = {},
@@ -480,16 +489,61 @@ require('lazy').setup({
     end,
   },
 
-  { --  NOTE: Change colorschemes. use `:Telescope colorscheme`.
+  --  NOTE: Change colorschemes. use `:Telescope colorscheme`.
+
+  -- {
+  --   'kepano/flexoki-neovim',
+  --   name = 'flexoki',
+  --   -- 'folke/tokyonight.nvim',
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   init = function()
+  --     -- other: 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --     vim.cmd.colorscheme 'flexoki-dark'
+  --     -- You can configure highlights by doing something like:
+  --     vim.cmd.hi 'Comment gui=none'
+  --   end,
+  -- },
+
+  {
     'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+    name = 'tokonight',
+    -- priority = 1000,
+    -- init = function()
+    -- vim.cmd.colorscheme 'tokyonight-night'
+    -- vim.cmd.hi 'Comment gui=none'
+    -- end,
+  },
+
+  { 'craftzdog/solarized-osaka.nvim' },
+  { 'sainnhe/gruvbox-material' },
+  { 'sainnhe/everforest' },
+  { 'Mofiqul/vscode.nvim' },
+  { 'NLKNguyen/papercolor-theme' },
+  { 'tomasr/molokai' },
+  { 'vigoux/oak' },
+
+  {
+    'navarasu/onedark.nvim',
+    name = 'onedark',
+    opts = {
+      style = 'deep',
+    },
     init = function()
-      -- other: 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
+      vim.cmd.colorscheme 'onedark'
     end,
   },
+
+  -- {
+  --   'rebelot/kanagawa.nvim',
+  --   name = 'kanagawa',
+  --   priority = 900,
+  --   init = function()
+  --     vim.cmd.colorscheme 'kanagawa-dragon'
+  --     vim.cmd.hi 'Comment gui=none'
+  --   end,
+  -- },
+  --
+  --
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
