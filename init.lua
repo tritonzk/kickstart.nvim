@@ -2,8 +2,6 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true -- Set to true if you have a Nerd Font installed and selected in the terminal
 
--- set default shell
-
 --  NOTE: See `:help vim.opt` and ':help option-list'
 vim.opt.number = true -- Make line numbers default
 vim.opt.relativenumber = false -- relative line numbers
@@ -25,10 +23,10 @@ vim.opt.inccommand = 'split' -- Preview substitutions live, as you type!
 vim.opt.cursorline = true -- Show which line your cursor is on
 vim.opt.scrolloff = 10 -- Minimal number of screen lines to keep above and below the cursor.
 
+------------------------------------------------------------------------------------------------
 --  NOTE: [[ Basic Keymaps ]] see :help vim.keymap.set()
---
--- Set highlight on search, but clear on pressing <Esc> in normal mode
-vim.opt.hlsearch = true
+
+vim.opt.hlsearch = true -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
@@ -48,8 +46,12 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+------------------------------------------------------------------------------------------------
+--  NOTE: [[ Personal Keymaps ]]
+
 vim.keymap.set('i', 'jj', '<Esc>', { desc = 'exit insert mode' })
 
+------------------------------------------------------------------------------------------------
 --  NOTE: [[ Basic Autocommands ]] See `:help lua-guide-autocommands`
 
 -- Highlight when yanking (copying) text, see `:help vim.highlight.on_yank()`
@@ -80,6 +82,8 @@ if not vim.loop.fs_stat(lazypath) then
   vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
+
+--------------------------------------------------------------------------------------------------
 
 -- NOTE: Here is where you install your plugins. Plugins can be added with a link
 -- (or for a github repo: 'owner/repo' link).
@@ -394,7 +398,6 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- python = { "isort", "black" },
-        --
         -- You can use a sub-list to tell conform to run *until* a formatter is found.
         -- javascript = { { "prettierd", "prettier" } },
       },
@@ -405,6 +408,8 @@ require('lazy').setup({
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
     dependencies = {
+
+      --  NOTE: Snippets
       { -- Snippet Engine & its associated nvim-cmp source
         'L3MON4D3/LuaSnip',
         build = (function()
@@ -417,9 +422,7 @@ require('lazy').setup({
           return 'make install_jsregexp'
         end)(),
         dependencies = {
-          -- `friendly-snippets` contains a variety of premade snippets.
-          --    See the README about individual language/framework/plugin snippets:
-          --    https://github.com/rafamadriz/friendly-snippets
+          -- https://github.com/rafamadriz/friendly-snippets
           {
             'rafamadriz/friendly-snippets',
             config = function()
@@ -428,14 +431,12 @@ require('lazy').setup({
           },
         },
       },
-      'saadparwaiz1/cmp_luasnip',
 
-      -- Adds other completion capabilities.
-      --  nvim-cmp does not ship with all sources by default. They are split
-      --  into multiple repos for maintenance purposes.
+      'saadparwaiz1/cmp_luasnip',
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
     },
+
     config = function()
       -- See `:help cmp`
       local cmp = require 'cmp'
@@ -459,11 +460,6 @@ require('lazy').setup({
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
           -- Accept ([y]es) the completion.
           ['<C-y>'] = cmp.mapping.confirm { select = true },
-          -- If you prefer more traditional completion keymaps, you can uncomment the following lines
-          --['<CR>'] = cmp.mapping.confirm { select = true },
-          --['<Tab>'] = cmp.mapping.select_next_item(),
-          --['<S-Tab>'] = cmp.mapping.select_prev_item(),
-
           -- Manually trigger a completion from nvim-cmp.
           ['<C-Space>'] = cmp.mapping.complete {},
           -- <c-l> expand right, <c-h> move back
@@ -491,40 +487,10 @@ require('lazy').setup({
 
   --  NOTE: Change colorschemes. use `:Telescope colorscheme`.
 
-  -- {
-  --   'kepano/flexoki-neovim',
-  --   name = 'flexoki',
-  --   -- 'folke/tokyonight.nvim',
-  --   priority = 1000, -- Make sure to load this before all the other start plugins.
-  --   init = function()
-  --     -- other: 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  --     vim.cmd.colorscheme 'flexoki-dark'
-  --     -- You can configure highlights by doing something like:
-  --     vim.cmd.hi 'Comment gui=none'
-  --   end,
-  -- },
-
-  {
-    'folke/tokyonight.nvim',
-    name = 'tokonight',
-    -- priority = 1000,
-    -- init = function()
-    -- vim.cmd.colorscheme 'tokyonight-night'
-    -- vim.cmd.hi 'Comment gui=none'
-    -- end,
-  },
-
-  { 'craftzdog/solarized-osaka.nvim' },
-  { 'sainnhe/gruvbox-material' },
-  { 'sainnhe/everforest' },
-  { 'Mofiqul/vscode.nvim' },
-  { 'NLKNguyen/papercolor-theme' },
-  { 'tomasr/molokai' },
-  { 'vigoux/oak' },
-
   {
     'navarasu/onedark.nvim',
     name = 'onedark',
+    priority = 1000,
     opts = {
       style = 'deep',
     },
@@ -533,21 +499,22 @@ require('lazy').setup({
     end,
   },
 
-  -- {
-  --   'rebelot/kanagawa.nvim',
-  --   name = 'kanagawa',
-  --   priority = 900,
-  --   init = function()
-  --     vim.cmd.colorscheme 'kanagawa-dragon'
-  --     vim.cmd.hi 'Comment gui=none'
-  --   end,
-  -- },
-  --
-  --
+  { 'kepano/flexoki-neovim', name = 'flexoki' },
+  { 'folke/tokyonight.nvim', name = 'tokonight' },
+  { 'craftzdog/solarized-osaka.nvim', name = 'solarized' },
+  { 'rebelot/kanagawa.nvim', name = 'kanagawa' },
+  { 'sainnhe/gruvbox-material' },
+  { 'sainnhe/everforest' },
+  { 'Mofiqul/vscode.nvim' },
+  { 'NLKNguyen/papercolor-theme' },
+  { 'tomasr/molokai' },
+  { 'vigoux/oak' },
 
-  -- Highlight todo, notes, etc in comments
+  --  NOTE: Highlight todo, notes, etc in comments
+
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
+  --  NOTE: Mini, add, surround, etc.
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
@@ -575,6 +542,8 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
+
+  -- NOTE: Treesitter
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
@@ -601,6 +570,7 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+
   --  NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
   require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
