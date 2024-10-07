@@ -3,6 +3,7 @@ vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true -- Set to true if you have a Nerd Font installed and selected in the terminal
 
 --  NOTE: See `:help vim.opt` and ':help option-list'
+vim.opt.tabstop = 8
 vim.opt.number = true -- Make line numbers default
 vim.opt.relativenumber = false -- relative line numbers
 vim.opt.mouse = 'a' --mouse mode
@@ -50,6 +51,7 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 --  NOTE: [[ Personal Keymaps ]]
 
 vim.keymap.set('i', 'jj', '<Esc>', { desc = 'exit insert mode' })
+vim.keymap.set('i', 'jk', '<Esc>', { desc = 'exit insert mode' })
 
 ------------------------------------------------------------------------------------------------
 --  NOTE: [[ Basic Autocommands ]] See `:help lua-guide-autocommands`
@@ -90,6 +92,16 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  'kqito/vim-easy-replace',
+  'wfxr/minimap.vim',
+  -- 'neoscroll.nvim',
+
+  { 'declancm/cinnamon.nvim', version = '*', keymaps = {
+    basic = true,
+    extra = true,
+  }, opts = {} },
+
+  'petertriho/nvim-scrollbar',
 
   { 'numToStr/Comment.nvim', opts = {} }, -- "gc" to comment visual regions/lines
 
@@ -203,6 +215,8 @@ require('lazy').setup({
       end, { desc = '[S]earch [N]eovim files' })
     end,
   },
+
+  { 'nvie/vim-flake8' },
 
   { --  NOTE: LSP config and plugins
     'neovim/nvim-lspconfig',
@@ -397,7 +411,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- python = { "isort", "black" },
+        python = { 'isort', 'black' },
         -- You can use a sub-list to tell conform to run *until* a formatter is found.
         -- javascript = { { "prettierd", "prettier" } },
       },
@@ -509,6 +523,7 @@ require('lazy').setup({
   { 'NLKNguyen/papercolor-theme' },
   { 'tomasr/molokai' },
   { 'vigoux/oak' },
+  -- { 'flazz/vim-colorschemes' }, -- colorscheme pack
 
   --  NOTE: Highlight todo, notes, etc in comments
 
