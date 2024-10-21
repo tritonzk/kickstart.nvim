@@ -52,6 +52,7 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 vim.keymap.set('i', 'jj', '<Esc>', { desc = 'exit insert mode' })
 vim.keymap.set('i', 'jk', '<Esc>', { desc = 'exit insert mode' })
+vim.keymap.set('n', '<leader>a', '<cmd>AerialToggle!<CR>')
 
 ------------------------------------------------------------------------------------------------
 --  NOTE: [[ Basic Autocommands ]] See `:help lua-guide-autocommands`
@@ -95,6 +96,25 @@ require('lazy').setup({
   'kqito/vim-easy-replace',
   'wfxr/minimap.vim',
   -- 'neoscroll.nvim',
+  --
+  {
+    'stevearc/aerial.nvim',
+    opts = {},
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-tree/nvim-web-devicons',
+      'wfxr/code-minimap',
+    },
+    config = function()
+      require('aerial').setup {
+        on_attach = function(bufnr)
+          -- Jump forwards/backwards with '{' and '}'
+          vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', { buffer = bufnr })
+          vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', { buffer = bufnr })
+        end,
+      }
+    end,
+  },
 
   { 'declancm/cinnamon.nvim', version = '*', keymaps = {
     basic = true,
@@ -167,6 +187,18 @@ require('lazy').setup({
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
+          },
+          aerial = {
+            col1_width = 4,
+            col2_width = 30,
+            format_symbol = function(symbol_path, filetype)
+              if filetype == 'json' or filetype == 'yaml' then
+                return table.concat(symbol_path, '.')
+              else
+                return symbol_path(#symbol_path)
+              end
+            end,
+            show_colums = 'both',
           },
         },
       }
@@ -562,6 +594,7 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
+
     opts = {
       ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
