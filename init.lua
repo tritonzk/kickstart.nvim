@@ -23,6 +23,7 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' } -- changes how w
 vim.opt.inccommand = 'split' -- Preview substitutions live, as you type!
 vim.opt.cursorline = true -- Show which line your cursor is on
 vim.opt.scrolloff = 10 -- Minimal number of screen lines to keep above and below the cursor.
+vim.opt.termguicolors = true
 
 ------------------------------------------------------------------------------------------------
 --  NOTE: [[ Basic Keymaps ]] see :help vim.keymap.set()
@@ -96,7 +97,22 @@ require('lazy').setup({
   'kqito/vim-easy-replace',
   'wfxr/minimap.vim',
   -- 'neoscroll.nvim',
-  --
+
+  {
+    'akinsho/bufferline.nvim',
+    version = '*',
+    dependencies = 'nvim-tree/nvim-web-devicons',
+    config = function()
+      require('bufferline').setup { options = { diagnostics = {'nvim_lsp' , 'coc'} } }
+    end,
+    opts = {
+      -- diagnostics_indicator = function(count, level, diagnostics_dict, context)
+      --   local icon = level:match 'error' and ' ' or ' '
+      --   return ' ' .. icon .. count
+      -- end,
+    },
+  },
+
   {
     'stevearc/aerial.nvim',
     opts = {},
