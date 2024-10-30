@@ -78,6 +78,16 @@ vim.api.nvim_create_autocmd({ 'FileType' }, {
   command = "imap <buffer> <F6> :w<CR>:exec '!python' shellescape(@%,1)<CR>",
 })
 
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  pattern = 'rust',
+  command = 'map <buffer> <F6> :w<CR>:!cargo run<CR>',
+})
+
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  pattern = 'rust',
+  command = 'imap <buffer> <F6> :w<CR>:!cargo run<CR>',
+})
+
 --  NOTE: [[ Install `lazy.nvim` plugin manager ]] See `:help lazy.nvim.txt`
 --  or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -94,7 +104,8 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-  'kqito/vim-easy-replace',
+  { 'kqito/vim-easy-replace' },
+
   'wfxr/minimap.vim',
   -- 'neoscroll.nvim',
 
@@ -103,7 +114,7 @@ require('lazy').setup({
     version = '*',
     dependencies = 'nvim-tree/nvim-web-devicons',
     config = function()
-      require('bufferline').setup { options = { diagnostics = {'nvim_lsp' , 'coc'} } }
+      require('bufferline').setup { options = { diagnostics = { 'nvim_lsp', 'coc' } } }
     end,
     opts = {
       -- diagnostics_indicator = function(count, level, diagnostics_dict, context)
@@ -112,6 +123,12 @@ require('lazy').setup({
       -- end,
     },
   },
+
+  -- {
+  --   'mrcjkb/rustaceanvim',
+  --   version = '^5',
+  --   lazy = false,
+  -- },
 
   {
     'stevearc/aerial.nvim',
@@ -378,6 +395,8 @@ require('lazy').setup({
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
+      local util = require 'lspconfig/util'
+
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --
@@ -388,11 +407,25 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = { -- see :help lspconfig-all for a list of all preconfig lsp's
-        clangd = {},
+        -- clangd = {},
         -- gopls = {},
         pyright = {},
         -- eslint = {},
-        -- rust_analyzer = {},
+        rust_analyzer = {
+          --   -- cmd = { 'rustup', 'run', 'stable', 'rust-analyzer' },
+          --   filetypes = { 'rust' },
+          --   root_dir = util.root_pattern 'Cargo.toml',
+          --   settings = {
+          --     ['rust_analyzer'] = {
+          --       diagnostics = {
+          --         enable = true,
+          --       },
+          --       cargo = {
+          --         allFeatures = true,
+          --       },
+          --     },
+          --   },
+        },
         -- tsserver = {},
 
         lua_ls = {
