@@ -3,6 +3,7 @@ vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true -- Set to true if you have a Nerd Font installed and selected in the terminal
 
 --  NOTE: See `:help vim.opt` and ':help option-list'
+vim.opt.conceallevel = 1
 vim.opt.tabstop = 8
 vim.opt.number = true -- Make line numbers default
 vim.opt.relativenumber = false -- relative line numbers
@@ -409,6 +410,7 @@ require('lazy').setup({
       local servers = { -- see :help lspconfig-all for a list of all preconfig lsp's
         -- clangd = {},
         -- gopls = {},
+        csharp_ls = {},
         pyright = {},
         -- eslint = {},
         rust_analyzer = {
