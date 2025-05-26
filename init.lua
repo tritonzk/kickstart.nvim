@@ -1,6 +1,7 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true -- Set to true if you have a Nerd Font installed and selected in the terminal
+-- vim.g.pythondoc_h_expand = 1
 
 --  NOTE: See `:help vim.opt` and ':help option-list'
 vim.opt.conceallevel = 1
@@ -9,7 +10,7 @@ vim.opt.number = true -- Make line numbers default
 vim.opt.relativenumber = false -- relative line numbers
 vim.opt.mouse = 'a' --mouse mode
 vim.opt.showmode = false -- Don't show the mode, since it's already in the status line
-vim.opt.clipboard = 'unnamedplus' -- sync OS clipboard to vim  NOTE: see :help 'clipboard'
+vim.opt.clipboard = '' -- sync OS clipboard to vim  NOTE: see :help 'clipboard'
 vim.opt.breakindent = true
 vim.opt.undofile = true -- save undo history
 vim.opt.ignorecase = true -- case-insensitive searching
@@ -25,6 +26,8 @@ vim.opt.inccommand = 'split' -- Preview substitutions live, as you type!
 vim.opt.cursorline = true -- Show which line your cursor is on
 vim.opt.scrolloff = 10 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.termguicolors = true
+
+-- vim.opt.pythondoc_h_expand = 1
 
 ------------------------------------------------------------------------------------------------
 --  NOTE: [[ Basic Keymaps ]] see :help vim.keymap.set()
@@ -104,61 +107,6 @@ vim.opt.rtp:prepend(lazypath)
 -- (or for a github repo: 'owner/repo' link).
 
 require('lazy').setup({
-  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-  { 'kqito/vim-easy-replace' },
-
-  'wfxr/minimap.vim',
-  -- 'neoscroll.nvim',
-
-  {
-    'akinsho/bufferline.nvim',
-    version = '*',
-    dependencies = 'nvim-tree/nvim-web-devicons',
-    config = function()
-      require('bufferline').setup { options = { diagnostics = { 'nvim_lsp', 'coc' } } }
-    end,
-    opts = {
-      -- diagnostics_indicator = function(count, level, diagnostics_dict, context)
-      --   local icon = level:match 'error' and ' ' or ' '
-      --   return ' ' .. icon .. count
-      -- end,
-    },
-  },
-
-  -- {
-  --   'mrcjkb/rustaceanvim',
-  --   version = '^5',
-  --   lazy = false,
-  -- },
-
-  {
-    'stevearc/aerial.nvim',
-    opts = {},
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-      'nvim-tree/nvim-web-devicons',
-      'wfxr/code-minimap',
-    },
-    config = function()
-      require('aerial').setup {
-        on_attach = function(bufnr)
-          -- Jump forwards/backwards with '{' and '}'
-          vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', { buffer = bufnr })
-          vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', { buffer = bufnr })
-        end,
-      }
-    end,
-  },
-
-  { 'declancm/cinnamon.nvim', version = '*', keymaps = {
-    basic = true,
-    extra = true,
-  }, opts = {} },
-
-  'petertriho/nvim-scrollbar',
-
-  { 'numToStr/Comment.nvim', opts = {} }, -- "gc" to comment visual regions/lines
-
   -- See `:help gitsigns` to understand what the configuration keys do
   { --  NOTE: Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -173,27 +121,57 @@ require('lazy').setup({
     },
   },
 
-  { --  NOTE: Useful plugin to show you pending keybinds.
+  { -- NOTE: Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    config = function() -- This is the function that runs, AFTER loading
-      require('which-key').setup()
+    opts = {
+      -- delay between pressing a key and opening which-key (milliseconds)
+      -- this setting is independent of vim.opt.timeoutlen
+      delay = 0,
+      icons = {
+        -- set icon mappings to true if you have a Nerd Font
+        mappings = vim.g.have_nerd_font,
+        -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
+        -- default which-key.nvim defined Nerd Font icons, otherwise define a string table
+        keys = vim.g.have_nerd_font and {} or {
+          Up = '<Up> ',
+          Down = '<Down> ',
+          Left = '<Left> ',
+          Right = '<Right> ',
+          C = '<C-…> ',
+          M = '<M-…> ',
+          D = '<D-…> ',
+          S = '<S-…> ',
+          CR = '<CR> ',
+          Esc = '<Esc> ',
+          ScrollWheelDown = '<ScrollWheelDown> ',
+          ScrollWheelUp = '<ScrollWheelUp> ',
+          NL = '<NL> ',
+          BS = '<BS> ',
+          Space = '<Space> ',
+          Tab = '<Tab> ',
+          F1 = '<F1>',
+          F2 = '<F2>',
+          F3 = '<F3>',
+          F4 = '<F4>',
+          F5 = '<F5>',
+          F6 = '<F6>',
+          F7 = '<F7>',
+          F8 = '<F8>',
+          F9 = '<F9>',
+          F10 = '<F10>',
+          F11 = '<F11>',
+          F12 = '<F12>',
+        },
+      },
 
       -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-        ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
-        ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
-      }
-      -- visual mode
-      require('which-key').register({
-        ['<leader>h'] = { 'Git [H]unk' },
-      }, { mode = 'v' })
-    end,
+      spec = {
+        { '<leader>s', group = '[S]earch' },
+        { '<leader>t', group = '[T]oggle' },
+        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+      },
+    },
   },
 
   { -- Fuzzy Finder (files, lsp, etc)
@@ -596,18 +574,6 @@ require('lazy').setup({
     end,
   },
 
-  { 'kepano/flexoki-neovim', name = 'flexoki' },
-  { 'folke/tokyonight.nvim', name = 'tokonight' },
-  { 'craftzdog/solarized-osaka.nvim', name = 'solarized' },
-  { 'rebelot/kanagawa.nvim', name = 'kanagawa' },
-  { 'sainnhe/gruvbox-material' },
-  { 'sainnhe/everforest' },
-  { 'Mofiqul/vscode.nvim' },
-  { 'NLKNguyen/papercolor-theme' },
-  { 'tomasr/molokai' },
-  { 'vigoux/oak' },
-  -- { 'flazz/vim-colorschemes' }, -- colorscheme pack
-
   --  NOTE: Highlight todo, notes, etc in comments
 
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -616,15 +582,7 @@ require('lazy').setup({
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
-      -- Better Around/Inside textobjects. Examples:
-      --  - va)  - [V]isually select [A]round [)]paren
-      --  - yinq - [Y]ank [I]nside [N]ext [']quote
-      --  - ci'  - [C]hange [I]nside [']quote
       require('mini.ai').setup { n_lines = 500 }
-      -- Add/delete/replace surroundings (brackets, quotes, etc.)
-      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-      -- - sd'   - [S]urround [D]elete [']quotes
-      -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
       -- Simple and easy statusline.
       local statusline = require 'mini.statusline'
@@ -648,7 +606,6 @@ require('lazy').setup({
 
     opts = {
       ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
-      -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
         enable = true,
@@ -677,6 +634,7 @@ require('lazy').setup({
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  -- require 'kickstart.after.lsp-lua', -- adds gitsigns recommend keymaps
 
   -- WARN: For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   { import = 'custom.plugins' },
