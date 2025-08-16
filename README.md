@@ -1,15 +1,14 @@
 # kickstart.nvim
 
 
-<details><summary> Linux and Mac </summary>
+Linux and Mac
 
 ```sh
 git clone https://github.com/nvim-lua/kickstart.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim
 ```
 
-</details>
 
-<details><summary> Windows </summary>
+Windows
 
 If you're using `cmd.exe`:
 
@@ -22,8 +21,6 @@ If you're using `powershell.exe`
 ```
 git clone https://github.com/nvim-lua/kickstart.nvim.git "${env:LOCALAPPDATA}\nvim"
 ```
-
-</details>
 
 
 ## Introduction
