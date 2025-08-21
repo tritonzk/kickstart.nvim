@@ -1,5 +1,6 @@
 return {
   'epwalsh/obsidian.nvim',
+  cond = jit.os == 'Windows',
   version = '*', -- recommended, use latest release instead of latest commit
   lazy = true,
   ft = 'markdown',
