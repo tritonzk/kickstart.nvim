@@ -18,3 +18,5 @@ if jit.os == 'Windows' then
     },
   }
 end
+
+return {}
