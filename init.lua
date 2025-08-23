@@ -3,6 +3,8 @@ vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true -- Set to true if you have a Nerd Font installed and selected in the terminal
 -- vim.g.pythondoc_h_expand = 1
 
+-- NOTE:
+
 --  NOTE: See `:help vim.opt` and ':help option-list'
 vim.opt.conceallevel = 1
 vim.opt.tabstop = 8
@@ -36,8 +38,12 @@ vim.opt.hlsearch = true -- Set highlight on search, but clear on pressing <Esc> 
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+-- vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
+-- vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+--
+-- vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
+-- vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
@@ -127,7 +133,7 @@ require('lazy').setup({
     opts = {
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.opt.timeoutlen
-      delay = 0,
+      delay = 300,
       icons = {
         -- set icon mappings to true if you have a Nerd Font
         mappings = vim.g.have_nerd_font,
@@ -385,28 +391,55 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+
       local servers = { -- see :help lspconfig-all for a list of all preconfig lsp's
-        -- clangd = {},
-        -- gopls = {},
-        csharp_ls = {},
-        pyright = {},
+        bashls = { cond = jit.os == 'Linux' },
+        clangd = { cond = jit.os == 'Windows' },
+        -- gopls = { cond = jit.os == 'Windows' },
+        -- csharp_ls = { cond = jit.os == 'Windows' },
+        pyright = { cond = jit.os == 'Windows' },
+        basedpyright = { cond = jit.os == 'Linux' },
         -- eslint = {},
+        gopls = {},
         rust_analyzer = {
-          --   -- cmd = { 'rustup', 'run', 'stable', 'rust-analyzer' },
-          --   filetypes = { 'rust' },
-          --   root_dir = util.root_pattern 'Cargo.toml',
-          --   settings = {
-          --     ['rust_analyzer'] = {
-          --       diagnostics = {
-          --         enable = true,
-          --       },
-          --       cargo = {
-          --         allFeatures = true,
-          --       },
-          --     },
-          --   },
+          cond = jit.os == 'Windows',
+          cmd = { 'rustup', 'run', 'stable', 'rust-analyzer' },
+          filetypes = { 'rust' },
+          root_dir = util.root_pattern 'Cargo.toml',
+          settings = {
+            ['rust_analyzer'] = {
+              diagnostics = {
+                enable = true,
+              },
+              cargo = {
+                allFeatures = true,
+              },
+            },
+          },
         },
-        -- tsserver = {},
+
+        -- tsserver = { cond = jit.os == 'Windows' },
+
+        --
+        -- emmylua_ls = {
+        --   settings = {
+        --     Lua = {
+        --       runtime = {
+        --         version = 'LuaJIT',
+        --       },
+        --       diagnostics = {
+        --         globals = { 'vim' },
+        --       },
+        --       workspace = {
+        --         library = vim.api.nvim_get_runtime_file('', true),
+        --         checkThirdParty = false,
+        --       },
+        --       completion = {
+        --         callSnippet = 'Replace',
+        --       },
+        --     },
+        --   },
+        -- },
 
         lua_ls = {
           -- cmd = {...},
@@ -414,11 +447,21 @@ require('lazy').setup({
           -- capabilities = {},
           settings = {
             Lua = {
+              runtime = {
+                version = 'LuaJIT',
+              },
+              diagnostics = {
+                globals = { 'vim' },
+              },
               completion = {
                 callSnippet = 'Replace',
               },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              workspace = {
+                checkThirdParty = false,
+              },
+              telemetry = {
+                enable = false,
+              },
             },
           },
         },
@@ -574,9 +617,15 @@ require('lazy').setup({
     end,
   },
 
-  --  NOTE: Highlight todo, notes, etc in comments
-
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  {
+    'folke/todo-comments.nvim',
+    event = 'VimEnter',
+    dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim' },
+    opts = { signs = false },
+    config = function()
+      vim.keymap.set('n', '<leader>st', '<cmd>TodoTelescope<CR>', { desc = "Search TODO's" })
+    end,
+  },
 
   --  NOTE: Mini, add, surround, etc.
   { -- Collection of various small independent plugins/modules
@@ -634,10 +683,13 @@ require('lazy').setup({
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
-  -- require 'kickstart.after.lsp-lua', -- adds gitsigns recommend keymaps
+  -- require 'kickstart.after.lsp-lua',
 
   -- WARN: For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
+
+  --
   { import = 'custom.plugins' },
+  --
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {
