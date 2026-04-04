@@ -1,7 +1,12 @@
 return {
   {
     'stevearc/aerial.nvim',
-    opts = {},
+    opts = {
+      placement = 'window',
+      default_direction = 'prefer_right',
+      min_width = { 15, 0.2 },
+      max_width = { 50, 0.3 },
+    },
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
       'nvim-tree/nvim-web-devicons',

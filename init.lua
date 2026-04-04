@@ -393,12 +393,14 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
 
       local servers = { -- see :help lspconfig-all for a list of all preconfig lsp's
+        htmlhint = {},
+        tailwindcss = {},
         bashls = { cond = jit.os == 'Linux' },
         clangd = { cond = jit.os == 'Windows' },
         -- gopls = { cond = jit.os == 'Windows' },
         -- csharp_ls = { cond = jit.os == 'Windows' },
-        pyright = { cond = jit.os == 'Windows' },
-        basedpyright = { cond = jit.os == 'Linux' },
+        pyright = {}, -- python lsp
+        -- basedpyright = {},
         -- eslint = {},
         gopls = {},
         rust_analyzer = {
@@ -614,16 +616,6 @@ require('lazy').setup({
     },
     init = function()
       vim.cmd.colorscheme 'onedark'
-    end,
-  },
-
-  {
-    'folke/todo-comments.nvim',
-    event = 'VimEnter',
-    dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim' },
-    opts = { signs = false },
-    config = function()
-      vim.keymap.set('n', '<leader>st', '<cmd>TodoTelescope<CR>', { desc = "Search TODO's" })
     end,
   },
 
