@@ -1,5 +1,6 @@
 return {
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  'tridactyl/vim-tridactyl', -- vim tridactylrc support
 
   { 'kqito/vim-easy-replace' },
 

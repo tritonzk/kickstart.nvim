@@ -1,6 +1,6 @@
 -- ============================================================
 -- SECTION 1: FOUNDATION
--- Core Neovim settings, leaders, options, basic keymaps, basic autocmds
+-- Core Neovim settings, leaders, options, basic keymaps, basic autocmdsinit
 -- ============================================================
 do
   -- Enable faster startup by caching compiled Lua modules
@@ -734,6 +734,7 @@ do
       local enabled_filetypes = {
         lua = true,
         python = true,
+        toml = true,
       }
       if enabled_filetypes[vim.bo[bufnr].filetype] then
         return { timeout_ms = 500 }
@@ -749,6 +750,8 @@ do
       -- rust = { 'rustfmt' },
       -- Conform can also run multiple formatters sequentially
       python = { 'isort', 'black' },
+      toml = { 'tombi' },
+
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
       -- javascript = { "prettierd", "prettier", stop_after_first = true },
